@@ -665,7 +665,7 @@
       <div class="player-wrapper">
         <iframe
           id="hero-video"
-          src="https://www.youtube.com/embed/I17w_2rsADk?autoplay=1&mute=1&loop=1&playlist=I17w_2rsADk&controls=0&rel=0&modestbranding=1&playsinline=1"
+          src="https://www.youtube.com/embed/I17w_2rsADk?autoplay=1&mute=1&loop=1&playlist=I17w_2rsADk&controls=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
           title="POV Showreel"
           frameborder="0"
           allow="autoplay; fullscreen"
@@ -849,8 +849,18 @@
     const soundLabel = document.getElementById('sound-label');
     const soundIcon = document.getElementById('sound-icon');
 
-    const mutedSrc = 'https://www.youtube.com/embed/I17w_2rsADk?autoplay=1&mute=1&loop=1&playlist=I17w_2rsADk&controls=0&rel=0&modestbranding=1&playsinline=1';
-    const unmutedSrc = 'https://www.youtube.com/embed/I17w_2rsADk?autoplay=1&mute=0&loop=1&playlist=I17w_2rsADk&controls=0&rel=0&modestbranding=1&playsinline=1';
+    let isMuted = true;
+
+    function ytCommand(func, args = []) {
+      heroVideo.contentWindow.postMessage(
+        JSON.stringify({
+          event: 'command',
+          func,
+          args
+        }),
+        '*'
+      );
+    }
 
     function setButtonMutedState() {
       soundBtn.classList.remove('is-on');
@@ -865,8 +875,8 @@
 
     function setButtonUnmutedState() {
       soundBtn.classList.add('is-on');
-      soundBtn.setAttribute('aria-label', 'Som ativado');
-      soundLabel.textContent = 'Som ativado';
+      soundBtn.setAttribute('aria-label', 'Desativar som');
+      soundLabel.textContent = 'Desativar som';
       soundIcon.innerHTML = `
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
         <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -875,15 +885,21 @@
     }
 
     soundBtn.addEventListener('click', () => {
-      const isMuted = heroVideo.src.includes('mute=1');
-
       if (isMuted) {
-        heroVideo.src = unmutedSrc;
+        ytCommand('unMute');
+        ytCommand('setVolume', [100]);
+        isMuted = false;
         setButtonUnmutedState();
       } else {
-        heroVideo.src = mutedSrc;
+        ytCommand('mute');
+        isMuted = true;
         setButtonMutedState();
       }
+    });
+
+    heroVideo.addEventListener('load', () => {
+      ytCommand('mute');
+      ytCommand('playVideo');
     });
 
     setButtonMutedState();
