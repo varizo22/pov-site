@@ -1,812 +1,892 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>POV — Captação de imagens com drone</title>
-<link rel="stylesheet" href="https://use.typekit.net/shv3ylo.css">
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap');
-
-  :root {
-    --blue-deep: #0d2a4a;
-    --blue-mid: #1a3f6f;
-    --blue-light: #1e4d8c;
-    --red: #c0392b;
-    --white: #f5f7fa;
-    --gray: #8a9bb0;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--blue-deep);
-    color: var(--white);
-    font-family: 'Montserrat', sans-serif;
-    overflow-x: hidden;
-  }
-
-  /* NAV */
-  nav {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 48px;
-    background: linear-gradient(to bottom, rgba(13,42,74,0.95), transparent);
-    backdrop-filter: blur(4px);
-  }
-
-  .nav-logo {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-  }
-
-  .nav-logo img {
-    height: 36px;
-    width: auto;
-    mix-blend-mode: screen;
-  }
-
-  nav ul {
-    list-style: none;
-    display: flex;
-    gap: 32px;
-  }
-
-  nav ul a {
-    color: var(--white);
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    opacity: 0.8;
-    transition: opacity .2s;
-  }
-
-  nav ul a:hover { opacity: 1; }
-
-  /* HERO */
-  #hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 88px 24px 34px;
-    background: radial-gradient(ellipse at 50% 40%, #1a3f6f 0%, #0d2a4a 60%, #060f1a 100%);
-    position: relative;
-    overflow: hidden;
-  }
-
-  #hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size: 30px 30px;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    margin-bottom: 14px;
-  }
-
-  .hero-logo {
-    margin-bottom: 16px;
-    animation: fadeDown .8s ease both;
-  }
-
-  .hero-logo img {
-    width: 210px;
-    max-width: 52vw;
-    mix-blend-mode: screen;
-  }
-
-  .hero-title {
-    font-family: "fractul-variable", sans-serif;
-    font-variation-settings: "wght" 2400;
-    font-size: clamp(24px, 3.2vw, 50px);
-    line-height: 1.02;
-    margin-bottom: 0;
-    animation: fadeDown .8s .3s ease both;
-    color: var(--white);
-    max-width: 1200px;
-    white-space: nowrap;
-  }
-
-  .hero-title span { color: var(--red); }
-
-  .hero-player {
-    position: relative;
-    z-index: 3;
-    width: min(66vw, 980px);
-    animation: fadeDown .8s .45s ease both;
-  }
-
-  .player-wrapper {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 24px 70px rgba(0,0,0,0.45);
-    background: #000;
-  }
-
-  .player-wrapper iframe {
-    width: 100%;
-    height: 100%;
-    display: block;
-    border: 0;
-  }
-
-  .hero-cta {
-    display: inline-block;
-    padding: 14px 40px;
-    background: var(--red);
-    color: #fff;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    text-decoration: none;
-    border-radius: 2px;
-    transition: background .2s, transform .2s;
-    animation: fadeDown .8s .45s ease both;
-    margin-bottom: 40px;
-  }
-
-  .hero-cta:hover {
-    background: #a93226;
-    transform: translateY(-2px);
-  }
-
-  .scroll-hint {
-    position: absolute;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    opacity: 0.4;
-    animation: bounce 2s infinite;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    z-index: 1;
-  }
-
-  .scroll-hint::after {
-    content: '';
-    width: 1px;
-    height: 20px;
-    background: var(--white);
-  }
-
-  /* SECTIONS */
-  section { padding: 100px 48px; }
-
-  .section-label {
-    font-size: 11px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--red);
-    margin-bottom: 12px;
-    font-weight: 600;
-  }
-
-  .section-title {
-    font-family: "fractul-variable", sans-serif;
-    font-variation-settings: "wght" 2400;
-    font-size: clamp(28px, 4vw, 48px);
-    margin-bottom: 48px;
-    line-height: 1.2;
-  }
-
-  /* SOBRE */
-  #sobre-section {
-    background: linear-gradient(135deg, #0a1e35 0%, #0d2a4a 100%);
-  }
-
-  .sobre-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-  }
-
-  .sobre-text p {
-    color: var(--gray);
-    line-height: 1.9;
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  .sobre-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
-
-  .stat {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    padding: 24px;
-    border-radius: 4px;
-    text-align: center;
-  }
-
-  .stat-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 40px;
-    color: var(--red);
-    display: block;
-    margin-bottom: 4px;
-  }
-
-  .stat-label {
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: var(--gray);
-    text-transform: uppercase;
-  }
-
-  /* VIDEOS */
-  #videos-section { background: #060f1a; }
-
-  .videos-inner {
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-
-  .format-group { margin-bottom: 64px; }
-
-  .format-title {
-    font-size: 12px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--gray);
-    margin-bottom: 24px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
-
-  .grid-169 {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 16px;
-  }
-
-  .grid-916 {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 16px;
-  }
-
-  .video-card {
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    border-radius: 4px;
-    background: var(--blue-mid);
-    transition: transform .3s, box-shadow .3s;
-  }
-
-  .video-card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 16px 48px rgba(0,0,0,0.5);
-  }
-
-  .ratio-169 { aspect-ratio: 16/9; }
-  .ratio-916 { aspect-ratio: 9/16; }
-
-  .video-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity .3s;
-  }
-
-  .video-card:hover .video-overlay { opacity: 1; }
-
-  .play-btn {
-    width: 56px;
-    height: 56px;
-    background: var(--red);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: scale(0.8);
-    transition: transform .3s;
-  }
-
-  .video-card:hover .play-btn { transform: scale(1); }
-  .play-btn svg { width: 20px; margin-left: 4px; }
-
-  .video-info {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 16px;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-    transform: translateY(8px);
-    opacity: 0;
-    transition: all .3s;
-  }
-
-  .video-card:hover .video-info {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  .video-info h4 {
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 2px;
-  }
-
-  .video-info span {
-    font-size: 11px;
-    color: var(--gray);
-  }
-
-  .thumb-1 { background: linear-gradient(135deg, #1a3a5c, #0d2a4a); }
-  .thumb-2 { background: linear-gradient(135deg, #2c1a1a, #1a0d0d); }
-  .thumb-3 { background: linear-gradient(135deg, #1a2c1a, #0d1a0d); }
-  .thumb-4 { background: linear-gradient(135deg, #2c2a1a, #1a180d); }
-  .thumb-5 { background: linear-gradient(135deg, #1a1a2c, #0d0d1a); }
-  .thumb-6 { background: linear-gradient(135deg, #2c1a2a, #1a0d18); }
-  .thumb-7 { background: linear-gradient(135deg, #0d2a4a, #1a3a5c); }
-  .thumb-8 { background: linear-gradient(135deg, #1a0d0d, #2c1a1a); }
-
-  .thumb-icon {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.15;
-    font-size: 48px;
-  }
-
-  /* MODAL */
-  .modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    background: rgba(0,0,0,0.95);
-    align-items: center;
-    justify-content: center;
-  }
-
-  .modal.active { display: flex; }
-
-  .modal-inner {
-    position: relative;
-    width: 90vw;
-    max-width: 900px;
-  }
-
-  .modal-close {
-    position: absolute;
-    top: -40px;
-    right: 0;
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 24px;
-    cursor: pointer;
-    opacity: 0.7;
-  }
-
-  .modal-close:hover { opacity: 1; }
-
-  .modal-content {
-    width: 100%;
-    aspect-ratio: 16/9;
-    background: #111;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    color: var(--gray);
-  }
-
-  .modal-content.vertical {
-    aspect-ratio: 9/16;
-    max-height: 80vh;
-    width: auto;
-    margin: 0 auto;
-  }
-
-  /* CONTATO */
-  #contato-section {
-    background: linear-gradient(135deg, #060f1a 0%, #0d2a4a 100%);
-    text-align: center;
-  }
-
-  #contato-section .section-title { margin-bottom: 16px; }
-
-  #contato-section p {
-    color: var(--gray);
-    margin-bottom: 40px;
-    font-size: 15px;
-  }
-
-  .contato-btns {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .btn-whats {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 16px 36px;
-    background: #25D366;
-    color: #fff;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-decoration: none;
-    border-radius: 2px;
-    transition: background .2s, transform .2s;
-  }
-
-  .btn-whats:hover {
-    background: #1da851;
-    transform: translateY(-2px);
-  }
-
-  .btn-email {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 16px 36px;
-    border: 1px solid rgba(255,255,255,0.2);
-    color: #fff;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-decoration: none;
-    border-radius: 2px;
-    transition: border-color .2s, transform .2s;
-  }
-
-  .btn-email:hover {
-    border-color: rgba(255,255,255,0.6);
-    transform: translateY(-2px);
-  }
-
-  /* FOOTER */
-  footer {
-    background: #040c17;
-    text-align: center;
-    padding: 32px;
-    font-size: 12px;
-    color: var(--gray);
-    letter-spacing: 1px;
-  }
-
-  /* WHATS FLOAT */
-  .whats-float {
-    position: fixed;
-    bottom: 32px;
-    right: 32px;
-    z-index: 99;
-    width: 56px;
-    height: 56px;
-    background: #25D366;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    box-shadow: 0 4px 20px rgba(37,211,102,0.4);
-    transition: transform .2s, box-shadow .2s;
-  }
-
-  .whats-float:hover {
-    transform: scale(1.1);
-    box-shadow: 0 8px 32px rgba(37,211,102,0.5);
-  }
-
-  /* ANIMS */
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes bounce {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(8px); }
-  }
-
-  .fade-in {
-    opacity: 0;
-    transform: translateY(32px);
-    transition: opacity .7s ease, transform .7s ease;
-  }
-
-  .fade-in.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  @media (max-width: 1024px) {
-    .hero-title {
-      white-space: normal;
-      max-width: 92vw;
-      font-size: clamp(24px, 4.8vw, 40px);
-      line-height: 1.06;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>POV — Captação de imagens com drone</title>
+  <link rel="stylesheet" href="https://use.typekit.net/shv3ylo.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap');
+
+    :root {
+      --blue-deep: #0d2a4a;
+      --blue-mid: #1a3f6f;
+      --blue-light: #1e4d8c;
+      --red: #c0392b;
+      --white: #f5f7fa;
+      --gray: #8a9bb0;
+      --black-soft: rgba(0,0,0,0.45);
     }
 
-    .hero-player {
-      width: min(78vw, 860px);
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--blue-deep);
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      overflow-x: hidden;
     }
-  }
 
-  @media (max-width: 768px) {
-    nav { padding: 16px 24px; }
-    nav ul { gap: 16px; }
-    section { padding: 64px 24px; }
-    .sobre-inner { grid-template-columns: 1fr; gap: 40px; }
-    .grid-169 { grid-template-columns: 1fr; }
-    .grid-916 { grid-template-columns: repeat(2, 1fr); }
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 48px;
+      background: linear-gradient(to bottom, rgba(13,42,74,0.95), transparent);
+      backdrop-filter: blur(4px);
+    }
 
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .nav-logo img {
+      height: 36px;
+      width: auto;
+      mix-blend-mode: screen;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 32px;
+    }
+
+    nav ul a {
+      color: var(--white);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      opacity: 0.8;
+      transition: opacity .2s;
+    }
+
+    nav ul a:hover { opacity: 1; }
+
+    /* HERO */
     #hero {
-      padding: 86px 16px 28px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 88px 24px 34px;
+      background: radial-gradient(ellipse at 50% 40%, #1a3f6f 0%, #0d2a4a 60%, #060f1a 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 30px 30px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      margin-bottom: 14px;
+    }
+
+    .hero-logo {
+      margin-bottom: 16px;
+      animation: fadeDown .8s ease both;
     }
 
     .hero-logo img {
-      width: 150px;
-      max-width: 46vw;
+      width: 210px;
+      max-width: 52vw;
+      mix-blend-mode: screen;
     }
 
     .hero-title {
-      font-size: clamp(18px, 6vw, 28px);
-      max-width: 94vw;
-      white-space: normal;
-      line-height: 1.08;
+      font-family: "fractul-variable", sans-serif;
+      font-variation-settings: "wght" 2400;
+      font-size: clamp(24px, 3.2vw, 50px);
+      line-height: 1.02;
+      margin-bottom: 0;
+      animation: fadeDown .8s .3s ease both;
+      color: var(--white);
+      max-width: 1200px;
+      white-space: nowrap;
     }
 
+    .hero-title span { color: var(--red); }
+
     .hero-player {
-      width: min(88vw, 640px);
+      position: relative;
+      z-index: 3;
+      width: min(66vw, 980px);
+      animation: fadeDown .8s .45s ease both;
+    }
+
+    .player-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.45);
+      background: #000;
+    }
+
+    .player-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border: 0;
+    }
+
+    .hero-sound-btn {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      z-index: 4;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.45);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-radius: 999px;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      transition: transform .2s, background .2s, border-color .2s, opacity .2s;
+    }
+
+    .hero-sound-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(0,0,0,0.6);
+      border-color: rgba(255,255,255,0.35);
+    }
+
+    .hero-sound-btn svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .hero-sound-btn.is-on {
+      background: rgba(192,57,43,0.95);
+      border-color: rgba(192,57,43,1);
     }
 
     .scroll-hint {
-      bottom: 10px;
-      font-size: 10px;
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.4;
+      animation: bounce 2s infinite;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      z-index: 1;
     }
 
     .scroll-hint::after {
-      height: 16px;
+      content: '';
+      width: 1px;
+      height: 20px;
+      background: var(--white);
     }
-  }
-</style>
+
+    /* SECTIONS */
+    section { padding: 100px 48px; }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .section-title {
+      font-family: "fractul-variable", sans-serif;
+      font-variation-settings: "wght" 2400;
+      font-size: clamp(28px, 4vw, 48px);
+      margin-bottom: 48px;
+      line-height: 1.2;
+    }
+
+    /* SOBRE */
+    #sobre-section {
+      background: linear-gradient(135deg, #0a1e35 0%, #0d2a4a 100%);
+    }
+
+    .sobre-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .sobre-text p {
+      color: var(--gray);
+      line-height: 1.9;
+      font-size: 15px;
+      margin-bottom: 16px;
+    }
+
+    .sobre-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .stat {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 24px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 40px;
+      color: var(--red);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--gray);
+      text-transform: uppercase;
+    }
+
+    /* VIDEOS */
+    #videos-section { background: #060f1a; }
+
+    .videos-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .format-group { margin-bottom: 64px; }
+
+    .format-title {
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .grid-169 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .grid-916 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .video-card {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      border-radius: 4px;
+      background: var(--blue-mid);
+      transition: transform .3s, box-shadow .3s;
+    }
+
+    .video-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+    }
+
+    .ratio-169 { aspect-ratio: 16/9; }
+    .ratio-916 { aspect-ratio: 9/16; }
+
+    .video-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .video-card:hover .video-overlay { opacity: 1; }
+
+    .play-btn {
+      width: 56px;
+      height: 56px;
+      background: var(--red);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: scale(0.8);
+      transition: transform .3s;
+    }
+
+    .video-card:hover .play-btn { transform: scale(1); }
+    .play-btn svg { width: 20px; margin-left: 4px; }
+
+    .video-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 16px;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      transform: translateY(8px);
+      opacity: 0;
+      transition: all .3s;
+    }
+
+    .video-card:hover .video-info {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .video-info h4 {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .video-info span {
+      font-size: 11px;
+      color: var(--gray);
+    }
+
+    .thumb-1 { background: linear-gradient(135deg, #1a3a5c, #0d2a4a); }
+    .thumb-2 { background: linear-gradient(135deg, #2c1a1a, #1a0d0d); }
+    .thumb-3 { background: linear-gradient(135deg, #1a2c1a, #0d1a0d); }
+    .thumb-4 { background: linear-gradient(135deg, #2c2a1a, #1a180d); }
+    .thumb-5 { background: linear-gradient(135deg, #1a1a2c, #0d0d1a); }
+    .thumb-6 { background: linear-gradient(135deg, #2c1a2a, #1a0d18); }
+    .thumb-7 { background: linear-gradient(135deg, #0d2a4a, #1a3a5c); }
+    .thumb-8 { background: linear-gradient(135deg, #1a0d0d, #2c1a1a); }
+
+    .thumb-icon {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.15;
+      font-size: 48px;
+    }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.95);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active { display: flex; }
+
+    .modal-inner {
+      position: relative;
+      width: 90vw;
+      max-width: 900px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+
+    .modal-close:hover { opacity: 1; }
+
+    .modal-content {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #111;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .modal-content.vertical {
+      aspect-ratio: 9/16;
+      max-height: 80vh;
+      width: auto;
+      margin: 0 auto;
+    }
+
+    /* CONTATO */
+    #contato-section {
+      background: linear-gradient(135deg, #060f1a 0%, #0d2a4a 100%);
+      text-align: center;
+    }
+
+    #contato-section .section-title { margin-bottom: 16px; }
+
+    #contato-section p {
+      color: var(--gray);
+      margin-bottom: 40px;
+      font-size: 15px;
+    }
+
+    .contato-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-whats {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 36px;
+      background: #25D366;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: background .2s, transform .2s;
+    }
+
+    .btn-whats:hover {
+      background: #1da851;
+      transform: translateY(-2px);
+    }
+
+    .btn-email {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 36px;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .btn-email:hover {
+      border-color: rgba(255,255,255,0.6);
+      transform: translateY(-2px);
+    }
+
+    /* FOOTER */
+    footer {
+      background: #040c17;
+      text-align: center;
+      padding: 32px;
+      font-size: 12px;
+      color: var(--gray);
+      letter-spacing: 1px;
+    }
+
+    /* WHATS FLOAT */
+    .whats-float {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: 99;
+      width: 56px;
+      height: 56px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .whats-float:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 32px rgba(37,211,102,0.5);
+    }
+
+    /* ANIMS */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1024px) {
+      .hero-title {
+        white-space: normal;
+        max-width: 92vw;
+        font-size: clamp(24px, 4.8vw, 40px);
+        line-height: 1.06;
+      }
+
+      .hero-player {
+        width: min(78vw, 860px);
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      nav ul { gap: 16px; }
+      section { padding: 64px 24px; }
+      .sobre-inner { grid-template-columns: 1fr; gap: 40px; }
+      .grid-169 { grid-template-columns: 1fr; }
+      .grid-916 { grid-template-columns: repeat(2, 1fr); }
+
+      #hero {
+        padding: 86px 16px 28px;
+      }
+
+      .hero-logo img {
+        width: 150px;
+        max-width: 46vw;
+      }
+
+      .hero-title {
+        font-size: clamp(18px, 6vw, 28px);
+        max-width: 94vw;
+        white-space: normal;
+        line-height: 1.08;
+      }
+
+      .hero-player {
+        width: min(88vw, 640px);
+      }
+
+      .hero-sound-btn {
+        right: 10px;
+        bottom: 10px;
+        padding: 9px 12px;
+        font-size: 11px;
+      }
+
+      .scroll-hint {
+        bottom: 10px;
+        font-size: 10px;
+      }
+
+      .scroll-hint::after {
+        height: 16px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <a href="#hero" class="nav-logo">
-    <img src="https://i.imgur.com/9R2bfPt.png" alt="POV Logo">
-  </a>
-  <ul>
-    <li><a href="#videos-section">Portfólio</a></li>
-    <li><a href="#sobre-section">Sobre</a></li>
-    <li><a href="#contato-section">Contato</a></li>
-  </ul>
-</nav>
-
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-content">
-    <div class="hero-logo">
+  <!-- NAV -->
+  <nav>
+    <a href="#hero" class="nav-logo">
       <img src="https://i.imgur.com/9R2bfPt.png" alt="POV Logo">
-    </div>
-    <h1 class="hero-title">Seu mundo visto de <span>outro ângulo</span></h1>
-  </div>
-
-  <div class="hero-player">
-    <div class="player-wrapper">
-      <iframe
-        id="hero-video"
-        src="https://www.youtube.com/embed/I17w_2rsADk?autoplay=1&mute=0&loop=1&playlist=I17w_2rsADk&controls=0&rel=0&modestbranding=1"
-        title="POV Showreel"
-        frameborder="0"
-        allow="autoplay; fullscreen"
-        allowfullscreen>
-      </iframe>
-    </div>
-  </div>
-
-  <div class="scroll-hint">scroll</div>
-</section>
-
-<!-- VÍDEOS -->
-<section id="videos-section">
-  <div class="videos-inner">
-    <p class="section-label fade-in">Portfólio</p>
-    <h2 class="section-title fade-in">Nossos Trabalhos</h2>
-
-    <div class="format-group fade-in">
-      <p class="format-title">▬ Formato Horizontal — 16:9</p>
-      <div class="grid-169">
-        <div class="video-card ratio-169 thumb-1" onclick="openModal('Voo sobre a cidade', false)">
-          <div class="thumb-icon">🏙️</div>
-          <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-          <div class="video-info"><h4>Voo sobre a cidade</h4><span>Urbano · 2024</span></div>
-        </div>
-        <div class="video-card ratio-169 thumb-2" onclick="openModal('Pôr do sol na praia', false)">
-          <div class="thumb-icon">🌅</div>
-          <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-          <div class="video-info"><h4>Pôr do sol na praia</h4><span>Natureza · 2024</span></div>
-        </div>
-        <div class="video-card ratio-169 thumb-3" onclick="openModal('Fazenda & Agro', false)">
-          <div class="thumb-icon">🌾</div>
-          <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-          <div class="video-info"><h4>Fazenda & Agro</h4><span>Agronegócio · 2024</span></div>
-        </div>
-        <div class="video-card ratio-169 thumb-4" onclick="openModal('Evento corporativo', false)">
-          <div class="thumb-icon">🎬</div>
-          <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-          <div class="video-info"><h4>Evento corporativo</h4><span>Corporativo · 2024</span></div>
-        </div>
-        <div class="video-card ratio-169 thumb-5" onclick="openModal('Serra verde', false)">
-          <div class="thumb-icon">⛰️</div>
-          <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-          <div class="video-info"><h4>Serra verde</h4><span>Natureza · 2024</span></div>
-        </div>
-        <div class="video-card ratio-169 thumb-6" onclick="openModal('Condomínio residencial', false)">
-          <div class="thumb-icon">🏡</div>
-          <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-          <div class="video-info"><h4>Condomínio residencial</h4><span>Imobiliário · 2024</span></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="format-group fade-in">
-      <p class="format-title">▮ Formato Vertical — 9:16</p>
-      <div class="grid-916">
-        <div class="video-card ratio-916 thumb-7" onclick="openModal('Reels urbano', true)">
-          <div class="thumb-icon">🌆</div>
-          <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-          <div class="video-info"><h4>Reels urbano</h4><span>2024</span></div>
-        </div>
-        <div class="video-card ratio-916 thumb-8" onclick="openModal('Story praia', true)">
-          <div class="thumb-icon">🌊</div>
-          <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-          <div class="video-info"><h4>Story praia</h4><span>2024</span></div>
-        </div>
-        <div class="video-card ratio-916 thumb-1" onclick="openModal('Vertical imóvel', true)">
-          <div class="thumb-icon">🏢</div>
-          <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-          <div class="video-info"><h4>Vertical imóvel</h4><span>2024</span></div>
-        </div>
-        <div class="video-card ratio-916 thumb-3" onclick="openModal('Natureza vertical', true)">
-          <div class="thumb-icon">🌿</div>
-          <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-          <div class="video-info"><h4>Natureza vertical</h4><span>2024</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SOBRE -->
-<section id="sobre-section">
-  <div class="sobre-inner">
-    <div class="sobre-text fade-in">
-      <p class="section-label">Sobre</p>
-      <h2 class="section-title">Quem está<br>por trás da câmera</h2>
-      <p>A POV nasceu da paixão por capturar o mundo de perspectivas únicas. Com drones de última geração e olho apurado para composição, transformamos imagens aéreas em narrativas visuais impactantes.</p>
-      <p>Atendemos empresas, construtoras, produtoras e criadores de conteúdo que querem elevar a qualidade visual dos seus projetos.</p>
-    </div>
-    <div class="sobre-stats fade-in">
-      <div class="stat"><span class="stat-num">+3</span><span class="stat-label">Anos de experiência</span></div>
-      <div class="stat"><span class="stat-num">+50</span><span class="stat-label">Projetos entregues</span></div>
-      <div class="stat"><span class="stat-num">4K</span><span class="stat-label">Resolução máxima</span></div>
-      <div class="stat"><span class="stat-num">✓</span><span class="stat-label">Habilitado ANAC</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- CONTATO -->
-<section id="contato-section">
-  <p class="section-label fade-in">Contato</p>
-  <h2 class="section-title fade-in">Eu quero conhecer seu ponto de vista</h2>
-  <p class="fade-in">Entre em contato e veja como agregar mais valor ao seu projeto.</p>
-  <div class="contato-btns fade-in">
-    <a href="https://wa.me/5521997444083" target="_blank" class="btn-whats">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      WhatsApp
     </a>
-    <a href="mailto:contato@povdrone.com.br" class="btn-email">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
-      E-mail
-    </a>
-  </div>
-</section>
+    <ul>
+      <li><a href="#videos-section">Portfólio</a></li>
+      <li><a href="#sobre-section">Sobre</a></li>
+      <li><a href="#contato-section">Contato</a></li>
+    </ul>
+  </nav>
 
-<!-- FOOTER -->
-<footer>
-  <p>© 2026 POV — Captação de imagens com drone. Todos os direitos reservados.</p>
-</footer>
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-content">
+      <div class="hero-logo">
+        <img src="https://i.imgur.com/9R2bfPt.png" alt="POV Logo">
+      </div>
+      <h1 class="hero-title">Seu mundo visto de <span>outro ângulo</span></h1>
+    </div>
 
-<!-- WHATSAPP FLOAT -->
-<a href="https://wa.me/5521997444083" target="_blank" class="whats-float" title="WhatsApp">
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-</a>
+    <div class="hero-player">
+      <div class="player-wrapper">
+        <iframe
+          id="hero-video"
+          src="https://www.youtube.com/embed/I17w_2rsADk?autoplay=1&mute=1&loop=1&playlist=I17w_2rsADk&controls=0&rel=0&modestbranding=1&playsinline=1"
+          title="POV Showreel"
+          frameborder="0"
+          allow="autoplay; fullscreen"
+          allowfullscreen>
+        </iframe>
 
-<!-- MODAL -->
-<div class="modal" id="modal" onclick="closeModal(event)">
-  <div class="modal-inner">
-    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('active')">✕ Fechar</button>
-    <div class="modal-content" id="modal-content">
-      <div style="text-align:center">
-        <div style="font-size:48px;margin-bottom:16px">🎬</div>
-        <p id="modal-title" style="font-size:18px;font-weight:600;margin-bottom:8px"></p>
-        <p style="color:#8a9bb0;font-size:13px">Adicione o link do seu vídeo aqui</p>
+        <button class="hero-sound-btn" id="hero-sound-btn" type="button" aria-label="Ativar som">
+          <svg id="sound-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+          </svg>
+          <span id="sound-label">Ativar som</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="scroll-hint">scroll</div>
+  </section>
+
+  <!-- VÍDEOS -->
+  <section id="videos-section">
+    <div class="videos-inner">
+      <p class="section-label fade-in">Portfólio</p>
+      <h2 class="section-title fade-in">Nossos Trabalhos</h2>
+
+      <div class="format-group fade-in">
+        <p class="format-title">▬ Formato Horizontal — 16:9</p>
+        <div class="grid-169">
+          <div class="video-card ratio-169 thumb-1" onclick="openModal('Voo sobre a cidade', false)">
+            <div class="thumb-icon">🏙️</div>
+            <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            <div class="video-info"><h4>Voo sobre a cidade</h4><span>Urbano · 2024</span></div>
+          </div>
+          <div class="video-card ratio-169 thumb-2" onclick="openModal('Pôr do sol na praia', false)">
+            <div class="thumb-icon">🌅</div>
+            <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            <div class="video-info"><h4>Pôr do sol na praia</h4><span>Natureza · 2024</span></div>
+          </div>
+          <div class="video-card ratio-169 thumb-3" onclick="openModal('Fazenda & Agro', false)">
+            <div class="thumb-icon">🌾</div>
+            <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            <div class="video-info"><h4>Fazenda & Agro</h4><span>Agronegócio · 2024</span></div>
+          </div>
+          <div class="video-card ratio-169 thumb-4" onclick="openModal('Evento corporativo', false)">
+            <div class="thumb-icon">🎬</div>
+            <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            <div class="video-info"><h4>Evento corporativo</h4><span>Corporativo · 2024</span></div>
+          </div>
+          <div class="video-card ratio-169 thumb-5" onclick="openModal('Serra verde', false)">
+            <div class="thumb-icon">⛰️</div>
+            <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            <div class="video-info"><h4>Serra verde</h4><span>Natureza · 2024</span></div>
+          </div>
+          <div class="video-card ratio-169 thumb-6" onclick="openModal('Condomínio residencial', false)">
+            <div class="thumb-icon">🏡</div>
+            <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            <div class="video-info"><h4>Condomínio residencial</h4><span>Imobiliário · 2024</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="format-group fade-in">
+        <p class="format-title">▮ Formato Vertical — 9:16</p>
+        <div class="grid-916">
+          <div class="video-card ratio-916 thumb-7" onclick="openModal('Reels urbano', true)">
+            <div class="thumb-icon">🌆</div>
+            <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            <div class="video-info"><h4>Reels urbano</h4><span>2024</span></div>
+          </div>
+          <div class="video-card ratio-916 thumb-8" onclick="openModal('Story praia', true)">
+            <div class="thumb-icon">🌊</div>
+            <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            <div class="video-info"><h4>Story praia</h4><span>2024</span></div>
+          </div>
+          <div class="video-card ratio-916 thumb-1" onclick="openModal('Vertical imóvel', true)">
+            <div class="thumb-icon">🏢</div>
+            <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            <div class="video-info"><h4>Vertical imóvel</h4><span>2024</span></div>
+          </div>
+          <div class="video-card ratio-916 thumb-3" onclick="openModal('Natureza vertical', true)">
+            <div class="thumb-icon">🌿</div>
+            <div class="video-overlay"><div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            <div class="video-info"><h4>Natureza vertical</h4><span>2024</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE -->
+  <section id="sobre-section">
+    <div class="sobre-inner">
+      <div class="sobre-text fade-in">
+        <p class="section-label">Sobre</p>
+        <h2 class="section-title">Quem está<br>por trás da câmera</h2>
+        <p>A POV nasceu da paixão por capturar o mundo de perspectivas únicas. Com drones de última geração e olho apurado para composição, transformamos imagens aéreas em narrativas visuais impactantes.</p>
+        <p>Atendemos empresas, construtoras, produtoras e criadores de conteúdo que querem elevar a qualidade visual dos seus projetos.</p>
+      </div>
+      <div class="sobre-stats fade-in">
+        <div class="stat"><span class="stat-num">+3</span><span class="stat-label">Anos de experiência</span></div>
+        <div class="stat"><span class="stat-num">+50</span><span class="stat-label">Projetos entregues</span></div>
+        <div class="stat"><span class="stat-num">4K</span><span class="stat-label">Resolução máxima</span></div>
+        <div class="stat"><span class="stat-num">✓</span><span class="stat-label">Habilitado ANAC</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATO -->
+  <section id="contato-section">
+    <p class="section-label fade-in">Contato</p>
+    <h2 class="section-title fade-in">Me mostra seu ponto de vista</h2>
+    <p class="fade-in">Entre em contato e veja como podemos agregar mais valor ao seu projeto.</p>
+    <div class="contato-btns fade-in">
+      <a href="https://wa.me/5521999999999" target="_blank" class="btn-whats">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+      <a href="mailto:contato@povdrone.com.br" class="btn-email">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+        E-mail
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 POV — Captação de imagens com drone. Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- WHATSAPP FLOAT -->
+  <a href="https://wa.me/5521997444083" target="_blank" class="whats-float" title="WhatsApp">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+
+  <!-- MODAL -->
+  <div class="modal" id="modal" onclick="closeModal(event)">
+    <div class="modal-inner">
+      <button class="modal-close" onclick="document.getElementById('modal').classList.remove('active')">✕ Fechar</button>
+      <div class="modal-content" id="modal-content">
+        <div style="text-align:center">
+          <div style="font-size:48px;margin-bottom:16px">🎬</div>
+          <p id="modal-title" style="font-size:18px;font-weight:600;margin-bottom:8px"></p>
+          <p style="color:#8a9bb0;font-size:13px">Adicione o link do seu vídeo aqui</p>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) e.target.classList.add('visible');
+  <script>
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    function openModal(title, vertical) {
+      const modal = document.getElementById('modal');
+      const content = document.getElementById('modal-content');
+      document.getElementById('modal-title').textContent = title;
+      content.className = 'modal-content' + (vertical ? ' vertical' : '');
+      modal.classList.add('active');
+    }
+
+    function closeModal(e) {
+      if (e.target === document.getElementById('modal')) {
+        document.getElementById('modal').classList.remove('active');
+      }
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        document.getElementById('modal').classList.remove('active');
+      }
     });
-  }, { threshold: 0.1 });
 
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    const heroVideo = document.getElementById('hero-video');
+    const soundBtn = document.getElementById('hero-sound-btn');
+    const soundLabel = document.getElementById('sound-label');
+    const soundIcon = document.getElementById('sound-icon');
 
-  function openModal(title, vertical) {
-    const modal = document.getElementById('modal');
-    const content = document.getElementById('modal-content');
-    document.getElementById('modal-title').textContent = title;
-    content.className = 'modal-content' + (vertical ? ' vertical' : '');
-    modal.classList.add('active');
-  }
+    const mutedSrc = 'https://www.youtube.com/embed/I17w_2rsADk?autoplay=1&mute=1&loop=1&playlist=I17w_2rsADk&controls=0&rel=0&modestbranding=1&playsinline=1';
+    const unmutedSrc = 'https://www.youtube.com/embed/I17w_2rsADk?autoplay=1&mute=0&loop=1&playlist=I17w_2rsADk&controls=0&rel=0&modestbranding=1&playsinline=1';
 
-  function closeModal(e) {
-    if (e.target === document.getElementById('modal')) {
-      document.getElementById('modal').classList.remove('active');
+    function setButtonMutedState() {
+      soundBtn.classList.remove('is-on');
+      soundBtn.setAttribute('aria-label', 'Ativar som');
+      soundLabel.textContent = 'Ativar som';
+      soundIcon.innerHTML = `
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+        <line x1="23" y1="9" x2="17" y2="15"></line>
+        <line x1="17" y1="9" x2="23" y2="15"></line>
+      `;
     }
-  }
 
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      document.getElementById('modal').classList.remove('active');
+    function setButtonUnmutedState() {
+      soundBtn.classList.add('is-on');
+      soundBtn.setAttribute('aria-label', 'Som ativado');
+      soundLabel.textContent = 'Som ativado';
+      soundIcon.innerHTML = `
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+      `;
     }
-  });
-</script>
+
+    soundBtn.addEventListener('click', () => {
+      const isMuted = heroVideo.src.includes('mute=1');
+
+      if (isMuted) {
+        heroVideo.src = unmutedSrc;
+        setButtonUnmutedState();
+      } else {
+        heroVideo.src = mutedSrc;
+        setButtonMutedState();
+      }
+    });
+
+    setButtonMutedState();
+  </script>
 </body>
 </html>
