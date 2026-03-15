@@ -58,7 +58,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 120px 24px 80px;
+    padding: 92px 24px 42px;
     background: radial-gradient(ellipse at 50% 40%, #1a3f6f 0%, #0d2a4a 60%, #060f1a 100%);
     position: relative;
     overflow: hidden;
@@ -73,42 +73,43 @@
     z-index: 0;
     pointer-events: none;
   }
+
   .hero-content {
     position: relative;
     z-index: 2;
-    margin-bottom: 22px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
+
   .hero-logo {
-    margin-bottom: 28px;
+    margin-bottom: 18px;
     animation: fadeDown .8s ease both;
   }
   .hero-logo img {
-    width: 280px;
-    max-width: 70vw;
+    width: 210px;
+    max-width: 52vw;
     mix-blend-mode: screen;
   }
-  .hero-tagline {
-    font-size: clamp(13px, 2vw, 16px);
-    letter-spacing: 4px; text-transform: uppercase;
-    color: var(--gray); margin-bottom: 24px;
-    animation: fadeDown .8s .15s ease both;
-  }
+
   .hero-title {
     font-family: "fractul-variable", sans-serif;
     font-variation-settings: "wght" 2400;
-    font-size: clamp(30px, 4.8vw, 64px);
-    line-height: 1.05;
+    font-size: clamp(24px, 3.6vw, 52px);
+    line-height: 1.04;
     margin-bottom: 0;
     animation: fadeDown .8s .3s ease both;
     color: var(--white);
-    max-width: 900px;
+    max-width: 1200px;
+    white-space: nowrap;
   }
   .hero-title span { color: var(--red); }
 
   .hero-player {
     position: relative;
     z-index: 3;
-    width: min(86vw, 1120px);
+    width: min(72vw, 1140px);
     animation: fadeDown .8s .45s ease both;
   }
   .player-wrapper {
@@ -139,14 +140,14 @@
   .hero-cta:hover { background: #a93226; transform: translateY(-2px); }
 
   .scroll-hint {
-    position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+    position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
     display: flex; flex-direction: column; align-items: center; gap: 8px;
     opacity: 0.4; animation: bounce 2s infinite;
     font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
     z-index: 1;
   }
   .scroll-hint::after {
-    content: ''; width: 1px; height: 40px;
+    content: ''; width: 1px; height: 28px;
     background: var(--white);
   }
 
@@ -331,6 +332,18 @@
   }
   .fade-in.visible { opacity: 1; transform: translateY(0); }
 
+  @media (max-width: 1024px) {
+    .hero-title {
+      white-space: normal;
+      max-width: 92vw;
+      font-size: clamp(24px, 5vw, 42px);
+    }
+
+    .hero-player {
+      width: min(84vw, 940px);
+    }
+  }
+
   @media (max-width: 768px) {
     nav { padding: 16px 24px; }
     nav ul { gap: 16px; }
@@ -339,13 +352,33 @@
     .grid-169 { grid-template-columns: 1fr; }
     .grid-916 { grid-template-columns: repeat(2, 1fr); }
 
+    #hero {
+      padding: 88px 16px 34px;
+    }
+
+    .hero-logo img {
+      width: 150px;
+      max-width: 48vw;
+    }
+
     .hero-title {
-      font-size: clamp(26px, 8vw, 42px);
-      max-width: 95%;
+      font-size: clamp(18px, 6vw, 30px);
+      max-width: 94vw;
+      white-space: normal;
+      line-height: 1.08;
     }
 
     .hero-player {
-      width: min(92vw, 680px);
+      width: min(94vw, 680px);
+    }
+
+    .scroll-hint {
+      bottom: 12px;
+      font-size: 10px;
+    }
+
+    .scroll-hint::after {
+      height: 20px;
     }
   }
 </style>
@@ -370,14 +403,14 @@
     <div class="hero-logo">
       <img src="https://i.imgur.com/9R2bfPt.png" alt="POV Logo">
     </div>
-    <h1 class="hero-title">Seu mundo visto<br>de <span>outro ângulo</span></h1>
+    <h1 class="hero-title">Seu mundo visto de <span>outro ângulo</span></h1>
   </div>
 
   <div class="hero-player">
     <div class="player-wrapper">
       <iframe
         id="hero-video"
-        src="https://www.youtube.com/embed/I17w_2rsADk?autoplay=1&mute=1&loop=1&playlist=I17w_2rsADk&controls=0&showinfo=0&rel=0&modestbranding=1"
+        src="https://www.youtube.com/embed/I17w_2rsADk?autoplay=1&loop=1&playlist=I17w_2rsADk&controls=0&rel=0&modestbranding=1&enablejsapi=1"
         title="POV Showreel"
         frameborder="0"
         allow="autoplay; fullscreen"
@@ -536,7 +569,7 @@
   }
 
   function closeModal(e) {
-    if (e.target === document.getElementById('modal')) {
+    if(e.target === document.getElementById('modal')) {
       document.getElementById('modal').classList.remove('active');
     }
   }
@@ -546,6 +579,24 @@
       document.getElementById('modal').classList.remove('active');
     }
   });
+
+  /* tenta religar o vídeo com som após a primeira interação do usuário */
+  function activateHeroVideoSound() {
+    const iframe = document.getElementById('hero-video');
+    const currentSrc = iframe.src;
+
+    if (!currentSrc.includes('mute=0')) {
+      iframe.src = 'https://www.youtube.com/embed/I17w_2rsADk?autoplay=1&mute=0&loop=1&playlist=I17w_2rsADk&controls=0&rel=0&modestbranding=1&enablejsapi=1';
+    }
+
+    document.removeEventListener('click', activateHeroVideoSound);
+    document.removeEventListener('keydown', activateHeroVideoSound);
+    document.removeEventListener('touchstart', activateHeroVideoSound);
+  }
+
+  document.addEventListener('click', activateHeroVideoSound, { once: true });
+  document.addEventListener('keydown', activateHeroVideoSound, { once: true });
+  document.addEventListener('touchstart', activateHeroVideoSound, { once: true });
 </script>
 </body>
 </html>
