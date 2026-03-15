@@ -885,17 +885,17 @@
     }
 
     soundBtn.addEventListener('click', () => {
-      if (isMuted) {
-        ytCommand('unMute');
-        ytCommand('setVolume', [100]);
-        isMuted = false;
-        setButtonUnmutedState();
-      } else {
-        ytCommand('mute');
-        isMuted = true;
-        setButtonMutedState();
-      }
-    });
+  if (isMuted) {
+    ytCommand('unMute');
+    ytCommand('setVolume', [65]);
+    isMuted = false;
+    setButtonUnmutedState();
+  } else {
+    ytCommand('mute');
+    isMuted = true;
+    setButtonMutedState();
+  }
+});
 
     heroVideo.addEventListener('load', () => {
       ytCommand('mute');
