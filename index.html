@@ -823,20 +823,33 @@
 }
 
 .hero-brand-lockup-mobile {
-  gap: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 .hero-wordmark-mobile {
   width: 112px;
+  flex-shrink: 0;
+  display: block;
+  margin: 0;
+}
+
+.hero-divider-mobile {
+  width: 2px;
+  height: 40px;
+  margin: 0;
+  flex-shrink: 0;
+  background: var(--red);
 }
 
 .hero-title-mobile {
-  font-size: 17px;
-  max-width: 160px;
-}
-
-.hero-player-mobile {
-  width: min(84vw, 320px);
+  font-size: 15px;
+  line-height: 0.95;
+  max-width: 150px;
+  margin: 0;
+  text-align: left;
 }
   }
 
