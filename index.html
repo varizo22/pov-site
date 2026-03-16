@@ -757,141 +757,161 @@
     }
 
     @media (max-width: 768px) {
-      .desktop-only { display: none !important; }
-      .mobile-only { display: block !important; }
+  .desktop-only { display: none !important; }
+  .mobile-only { display: block !important; }
 
-      nav {
-        padding: 14px 16px;
-      }
+  nav {
+    padding: 14px 16px;
+  }
 
-      .nav-logo img {
-        height: 28px;
-      }
+  .nav-logo img {
+    height: 28px;
+  }
 
-      .nav-toggle {
-        display: block;
-      }
+  .nav-toggle {
+    display: block;
+  }
 
-      #nav-menu {
-        position: fixed;
-        top: 0;
-        right: 0;
-        width: min(78vw, 320px);
-        height: 100vh;
-        margin: 0;
-        padding: 96px 28px 40px;
-        background: rgba(7, 18, 33, 0.96);
-        backdrop-filter: blur(12px);
-        border-left: 1px solid rgba(255,255,255,0.08);
-        box-shadow: -20px 0 50px rgba(0,0,0,0.35);
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-start;
-        gap: 22px;
-        transform: translateX(100%);
-        transition: transform .28s ease;
-        z-index: 302;
-      }
+  #nav-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: min(78vw, 320px);
+    height: 100vh;
+    margin: 0;
+    padding: 96px 28px 40px;
+    background: rgba(7, 18, 33, 0.96);
+    backdrop-filter: blur(12px);
+    border-left: 1px solid rgba(255,255,255,0.08);
+    box-shadow: -20px 0 50px rgba(0,0,0,0.35);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 22px;
+    transform: translateX(100%);
+    transition: transform .28s ease;
+    z-index: 302;
+  }
 
-      #nav-menu.active {
-        transform: translateX(0);
-      }
+  #nav-menu.active {
+    transform: translateX(0);
+  }
 
-      #nav-menu a {
-        font-size: 14px;
-        letter-spacing: 1px;
-        opacity: 1;
-      }
+  #nav-menu a {
+    font-size: 14px;
+    letter-spacing: 1px;
+    opacity: 1;
+  }
 
-      section { padding: 64px 24px; }
-      .sobre-inner { grid-template-columns: 1fr; gap: 40px; }
-      .grid-169 { grid-template-columns: 1fr; }
-      .grid-916 { grid-template-columns: repeat(2, 1fr); }
+  section { padding: 64px 24px; }
+  .sobre-inner { grid-template-columns: 1fr; gap: 40px; }
+  .grid-169 { grid-template-columns: 1fr; }
+  .grid-916 { grid-template-columns: repeat(2, 1fr); }
 
-      #hero {
-        padding: 94px 14px 34px;
-      }
+  #hero {
+    padding: 94px 14px 34px;
+  }
 
-      .hero-top-mobile {
-        max-width: 330px;
-        margin-bottom: 18px;
-      }
+  /* AJUSTE DO BLOCO LOGO + DIVISOR + TEXTO */
+  .hero-top-mobile {
+    max-width: 330px;
+    margin: 0 auto 18px;
+  }
 
-      .hero-brand-lockup-mobile {
-        gap: 8px;
-      }
+  .hero-brand-lockup-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+  }
 
-      .hero-wordmark-mobile {
-        width: 102px;
-        margin-top: 6px;
-      }
+  .hero-wordmark-mobile {
+    width: 104px;
+    flex-shrink: 0;
+    display: block;
+    margin-top: 0;
+  }
 
-      .hero-divider-mobile {
-        height: 40px;
-        margin-top: 4px;
-      }
+  .hero-divider-mobile {
+    width: 2px;
+    height: 42px;
+    background: var(--red);
+    flex-shrink: 0;
+    margin-top: 0;
+  }
 
-      .hero-title-mobile {
-        font-size: 16px;
-        max-width: 150px;
-      }
+  .hero-title-mobile {
+    font-family: "fractul-variable", sans-serif;
+    font-variation-settings: "wght" 2400;
+    font-size: 16px;
+    line-height: 0.9;
+    margin: 0;
+    text-align: left;
+    max-width: 150px;
+  }
 
-      .hero-player-mobile {
-        width: min(72vw, 280px);
-      }
+  .hero-player-mobile {
+    width: min(72vw, 280px);
+  }
 
-      .hero-player-mobile .player-wrapper {
-        aspect-ratio: 9 / 16;
-        max-height: none;
-      }
+  .hero-player-mobile .player-wrapper {
+    aspect-ratio: 9 / 16;
+    max-height: none;
+  }
 
-      .player-wrapper {
-        border-radius: 26px;
-      }
+  .player-wrapper {
+    border-radius: 26px;
+  }
 
-      .hero-sound-btn {
-        right: 10px;
-        bottom: 10px;
-        padding: 9px 12px;
-        font-size: 11px;
-      }
+  .hero-sound-btn {
+    right: 10px;
+    bottom: 10px;
+    padding: 9px 12px;
+    font-size: 11px;
+  }
 
-      .scroll-hint {
-        bottom: 10px;
-        font-size: 10px;
-      }
+  .scroll-hint {
+    bottom: 10px;
+    font-size: 10px;
+  }
 
-      .scroll-hint::after {
-        height: 16px;
-      }
+  .scroll-hint::after {
+    height: 16px;
+  }
 
-      .whats-float {
-        right: 14px;
-        bottom: 14px;
-        max-width: calc(100vw - 28px);
-      }
+  /* AJUSTE DO CTA WHATSAPP */
+  .whats-float {
+    right: 14px;
+    bottom: 14px;
+    max-width: calc(100vw - 28px);
+  }
 
-      .whats-cta-box {
-        align-items: flex-end;
-      }
+  .whats-cta-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+  }
 
-      .whats-cta-text {
-        font-size: 14px;
-        line-height: 0.95;
-      }
+  .whats-cta-text {
+    font-size: 13px;
+    line-height: 0.9;
+    text-align: right;
+  }
 
-      .whats-cta-button {
-        font-size: 12px;
-        padding: 8px 9px;
-        gap: 6px;
-      }
+  .whats-cta-button {
+    font-size: 11px;
+    padding: 7px 8px;
+    gap: 5px;
+  }
 
-      .whats-cta-button svg {
-        width: 16px;
-        height: 16px;
-      }
-    }
+  .whats-cta-button svg {
+    width: 14px;
+    height: 14px;
+  }
+}
   </style>
 </head>
 <body>
