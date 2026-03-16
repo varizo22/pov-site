@@ -42,29 +42,29 @@
   backdrop-filter: none;
 }
 
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-      position: relative;
-      z-index: 303;
-      flex-shrink: 0;
-    }
+.nav-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  position: relative;
+  z-index: 303;
+  flex-shrink: 0;
+}
 
-    .nav-logo img {
+.nav-logo img {
   height: 24px;
   width: auto;
   display: block;
 }
 
-    #nav-menu {
-      list-style: none;
-      display: flex;
-      gap: 28px;
-      align-items: center;
-    }
+.desktop-nav {
+  list-style: none;
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
 
-    #nav-menu a {
+.desktop-nav a {
   color: #fff;
   text-decoration: none;
   font-size: 11px;
@@ -75,14 +75,14 @@
   transition: opacity .2s ease;
 }
 
-    #nav-menu a:hover {
+.desktop-nav a:hover {
   opacity: 0.85;
 }
 
-    .nav-toggle {
+.nav-toggle {
   display: none;
   position: relative;
-  z-index: 303;
+  z-index: 304;
   width: 38px;
   height: 38px;
   border: 1px solid rgba(255,255,255,0.35);
@@ -93,18 +93,18 @@
   backdrop-filter: none;
 }
 
-    .nav-toggle span {
-      position: absolute;
-      left: 50%;
-      width: 18px;
-      height: 2px;
-      background: #fff;
-      border-radius: 999px;
-      transform: translateX(-50%);
-      transition: .25s ease;
-    }
+.nav-toggle span {
+  position: absolute;
+  left: 50%;
+  width: 18px;
+  height: 2px;
+  background: #fff;
+  border-radius: 999px;
+  transform: translateX(-50%);
+  transition: .25s ease;
+}
 
-    .nav-toggle span:nth-child(1) { top: 12px; }
+.nav-toggle span:nth-child(1) { top: 12px; }
 .nav-toggle span:nth-child(2) { top: 18px; }
 .nav-toggle span:nth-child(3) { top: 24px; }
 
@@ -113,9 +113,17 @@
   transform: translateX(-50%) rotate(45deg);
 }
 
+.nav-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
 .nav-toggle.active span:nth-child(3) {
   top: 18px;
   transform: translateX(-50%) rotate(-45deg);
+}
+
+.mobile-menu-panel {
+  display: none;
 }
 
     #hero {
@@ -755,58 +763,102 @@
   padding: 8px 12px;
 }
 
-  .nav-logo img {
-    height: 28px;
-  }
-
-  .nav-toggle {
-    display: block;
-  }
-      
-  .btn-contato-whats {
-  width: min(100%, 300px);
-  min-height: 58px;
-  padding: 14px 18px;
-  font-size: 18px;
-  gap: 8px;
+.nav-logo img {
+  height: 28px;
 }
 
-.btn-contato-whats svg {
-  width: 20px;
-  height: 20px;
+.desktop-nav {
+  display: none;
 }
 
-  #nav-menu {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: min(78vw, 320px);
-    height: 100vh;
-    margin: 0;
-    padding: 96px 28px 40px;
-    background: rgba(7, 18, 33, 0.96);
-    backdrop-filter: blur(12px);
-    border-left: 1px solid rgba(255,255,255,0.08);
-    box-shadow: -20px 0 50px rgba(0,0,0,0.35);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 22px;
-    transform: translateX(100%);
-    transition: transform .28s ease;
-    z-index: 302;
-  }
+.nav-toggle {
+  display: block;
+}
 
-  #nav-menu.active {
-    transform: translateX(0);
-  }
+.mobile-menu-panel {
+  position: fixed;
+  inset: 0;
+  background: #02122d;
+  z-index: 302;
+  display: flex;
+  flex-direction: column;
+  padding: 26px 26px 40px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+  transition: opacity .28s ease, transform .28s ease;
+}
 
-  #nav-menu a {
-    font-size: 14px;
-    letter-spacing: 1px;
-    opacity: 1;
-  }
+.mobile-menu-panel.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.mobile-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.mobile-menu-logo {
+  width: 145px;
+  max-width: 45vw;
+  display: block;
+}
+
+.mobile-menu-close {
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+  color: #fff;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.mobile-menu-line {
+  width: 100%;
+  height: 2px;
+  background: var(--red);
+  margin-bottom: 34px;
+}
+
+#nav-menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+}
+
+#nav-menu li {
+  margin: 0;
+  padding: 0;
+}
+
+.mobile-nav-link {
+  display: inline-block;
+  color: #fff;
+  text-decoration: none;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 6px 0;
+  transition: background .22s ease, color .22s ease, padding .22s ease, transform .22s ease;
+}
+
+.mobile-nav-link.active {
+  background: var(--red);
+  color: #fff;
+  padding: 8px 16px;
+  transform: translateX(0);
+}
 
   section { padding: 64px 24px; }
   .sobre-inner { grid-template-columns: 1fr; gap: 40px; }
@@ -914,22 +966,39 @@
 <body>
 
   <nav>
-    <a href="#hero" class="nav-logo">
-      <img src="symbol.png" alt="POV Símbolo">
-    </a>
+  <a href="#hero" class="nav-logo">
+    <img src="symbol.png" alt="POV Símbolo">
+  </a>
 
-    <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+  <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <div class="mobile-menu-panel" id="mobile-menu-panel">
+    <div class="mobile-menu-header">
+      <img src="https://i.imgur.com/9R2bfPt.png" alt="POV Logo" class="mobile-menu-logo">
+      <button class="mobile-menu-close" id="mobile-menu-close" type="button" aria-label="Fechar menu">
+        ✕
+      </button>
+    </div>
+
+    <div class="mobile-menu-line"></div>
 
     <ul id="nav-menu">
-      <li><a href="#videos-section">Portfólio</a></li>
-      <li><a href="#sobre-section">Sobre</a></li>
-      <li><a href="#contato-section">Contato</a></li>
+      <li><a href="#videos-section" class="mobile-nav-link">Portfólio</a></li>
+      <li><a href="#sobre-section" class="mobile-nav-link">Sobre</a></li>
+      <li><a href="#contato-section" class="mobile-nav-link">Contato</a></li>
     </ul>
-  </nav>
+  </div>
+
+  <ul class="desktop-nav">
+    <li><a href="#videos-section">Portfólio</a></li>
+    <li><a href="#sobre-section">Sobre</a></li>
+    <li><a href="#contato-section">Contato</a></li>
+  </ul>
+</nav>
 
   <section id="hero">
     <div class="hero-top desktop-only">
@@ -1291,24 +1360,37 @@
     setupHeroSound('hero-video-mobile', 'hero-sound-btn-mobile');
 
     const navToggle = document.getElementById('nav-toggle');
-    const navMenu = document.getElementById('nav-menu');
+const mobileMenuPanel = document.getElementById('mobile-menu-panel');
+const mobileMenuClose = document.getElementById('mobile-menu-close');
+const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 
-    if (navToggle && navMenu) {
-      navToggle.addEventListener('click', () => {
-        const isOpen = navMenu.classList.toggle('active');
-        navToggle.classList.toggle('active', isOpen);
-        navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      });
+function openMobileMenu() {
+  mobileMenuPanel.classList.add('active');
+  navToggle.classList.add('active');
+  navToggle.setAttribute('aria-expanded', 'true');
+}
 
-      navMenu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-          navMenu.classList.remove('active');
-          navToggle.classList.remove('active');
-          navToggle.setAttribute('aria-expanded', 'false');
-        });
-        
-      });
-    }
+function closeMobileMenu() {
+  mobileMenuPanel.classList.remove('active');
+  navToggle.classList.remove('active');
+  navToggle.setAttribute('aria-expanded', 'false');
+}
+
+if (navToggle && mobileMenuPanel && mobileMenuClose) {
+  navToggle.addEventListener('click', openMobileMenu);
+  mobileMenuClose.addEventListener('click', closeMobileMenu);
+
+  mobileNavLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      mobileNavLinks.forEach(item => item.classList.remove('active'));
+      link.classList.add('active');
+
+      setTimeout(() => {
+        closeMobileMenu();
+      }, 220);
+    });
+  });
+}
     const floatingWhats = document.querySelector('.whats-float');
 const contatoSection = document.getElementById('contato-section');
 
