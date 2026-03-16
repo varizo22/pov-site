@@ -39,7 +39,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 18px 48px;
+      padding: 18px 28px;
       background: linear-gradient(to bottom, rgba(13,42,74,0.95), transparent);
       backdrop-filter: blur(4px);
     }
@@ -53,26 +53,25 @@
     }
 
     .nav-logo img {
-      height: 36px;
+      height: 32px;
       width: auto;
       display: block;
-      mix-blend-mode: screen;
     }
 
     #nav-menu {
       list-style: none;
       display: flex;
-      gap: 32px;
+      gap: 28px;
     }
 
     #nav-menu a {
       color: var(--white);
       text-decoration: none;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
       text-transform: uppercase;
-      opacity: 0.8;
+      opacity: 0.85;
       transition: opacity .2s;
     }
 
@@ -149,7 +148,49 @@
       pointer-events: none;
     }
 
-    .hero-content {
+    .hero-top {
+      position: relative;
+      z-index: 2;
+      width: min(76vw, 980px);
+      margin: 0 auto 22px;
+    }
+
+    .hero-brand-lockup {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+    }
+
+    .hero-wordmark {
+      width: 260px;
+      max-width: 28vw;
+      display: block;
+      mix-blend-mode: screen;
+    }
+
+    .hero-divider {
+      width: 2px;
+      height: 86px;
+      background: var(--red);
+      flex-shrink: 0;
+    }
+
+    .hero-title-desktop {
+      font-family: "fractul-variable", sans-serif;
+      font-variation-settings: "wght" 2400;
+      font-size: clamp(34px, 3.1vw, 54px);
+      line-height: 0.95;
+      color: var(--white);
+      text-align: left;
+      margin: 0;
+    }
+
+    .hero-title-desktop span {
+      color: var(--red);
+    }
+
+    .hero-top-mobile {
       position: relative;
       z-index: 2;
       margin-bottom: 14px;
@@ -187,7 +228,7 @@
     }
 
     .hero-player-desktop {
-      width: min(66vw, 980px);
+      width: min(76vw, 980px);
     }
 
     .hero-player-desktop .player-wrapper {
@@ -206,7 +247,7 @@
     .player-wrapper {
       position: relative;
       width: 100%;
-      border-radius: 8px;
+      border-radius: 42px;
       overflow: hidden;
       box-shadow: 0 24px 70px rgba(0,0,0,0.45);
       background: #000;
@@ -601,27 +642,67 @@
       letter-spacing: 1px;
     }
 
-    /* WHATS FLOAT */
+    /* CTA WHATS DESKTOP */
     .whats-float {
       position: fixed;
-      bottom: 32px;
-      right: 32px;
       z-index: 99;
-      width: 56px;
-      height: 56px;
-      background: #25D366;
-      border-radius: 50%;
+      width: auto;
+      height: auto;
+      background: transparent;
+      border-radius: 0;
+      box-shadow: none;
+      right: 28px;
+      bottom: 28px;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      align-items: flex-end;
+      justify-content: flex-end;
       text-decoration: none;
-      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
-      transition: transform .2s, box-shadow .2s;
     }
 
     .whats-float:hover {
-      transform: scale(1.1);
-      box-shadow: 0 8px 32px rgba(37,211,102,0.5);
+      transform: none;
+      box-shadow: none;
+    }
+
+    .whats-cta-box {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .whats-cta-text {
+      font-family: "fractul-variable", sans-serif;
+      font-variation-settings: "wght" 2400;
+      font-size: 22px;
+      line-height: 0.95;
+      text-align: right;
+      color: var(--white);
+    }
+
+    .whats-cta-text span {
+      color: var(--red);
+    }
+
+    .whats-cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--red);
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 14px;
+      font-family: "fractul-variable", sans-serif;
+      font-variation-settings: "wght" 2400;
+      font-size: 18px;
+      line-height: 1;
+      border-radius: 0;
+    }
+
+    .whats-cta-button svg {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
     }
 
     /* ANIMS */
@@ -654,8 +735,18 @@
         line-height: 1.06;
       }
 
-      .hero-player-desktop {
-        width: min(78vw, 860px);
+      .hero-player-desktop,
+      .hero-top {
+        width: min(88vw, 860px);
+      }
+
+      .hero-wordmark {
+        width: 220px;
+        max-width: 34vw;
+      }
+
+      .hero-title-desktop {
+        font-size: clamp(28px, 3vw, 42px);
       }
     }
 
@@ -668,7 +759,7 @@
       }
 
       .nav-logo img {
-        height: 30px;
+        height: 28px;
       }
 
       .nav-toggle {
@@ -716,6 +807,31 @@
         padding: 86px 16px 28px;
       }
 
+      .hero-top {
+        width: 100%;
+        margin-bottom: 14px;
+      }
+
+      .hero-brand-lockup {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .hero-wordmark {
+        width: 150px;
+        max-width: 46vw;
+      }
+
+      .hero-divider {
+        display: none;
+      }
+
+      .hero-title-desktop {
+        font-size: clamp(18px, 6vw, 28px);
+        text-align: center;
+        line-height: 1.02;
+      }
+
       .hero-logo img {
         width: 150px;
         max-width: 46vw;
@@ -736,6 +852,10 @@
         max-height: none;
       }
 
+      .player-wrapper {
+        border-radius: 12px;
+      }
+
       .hero-sound-btn {
         right: 10px;
         bottom: 10px;
@@ -751,6 +871,25 @@
       .scroll-hint::after {
         height: 16px;
       }
+
+      .whats-float {
+        width: 56px;
+        height: 56px;
+        background: #25D366;
+        border-radius: 50%;
+        box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+        right: 20px;
+        bottom: 20px;
+      }
+
+      .whats-float:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 32px rgba(37,211,102,0.5);
+      }
+
+      .whats-cta-box {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -758,8 +897,8 @@
 
   <nav>
     <a href="#hero" class="nav-logo">
-  <img src="symbol.png" alt="POV Símbolo">
-</a>
+      <img src="symbol.png" alt="POV Símbolo">
+    </a>
 
     <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
       <span></span>
@@ -775,7 +914,17 @@
   </nav>
 
   <section id="hero">
-    <div class="hero-content">
+    <div class="hero-top desktop-only">
+      <div class="hero-brand-lockup">
+        <img src="https://i.imgur.com/9R2bfPt.png" alt="POV Logo" class="hero-wordmark">
+        <div class="hero-divider"></div>
+        <h1 class="hero-title-desktop">
+          Seu mundo visto<br>de <span>outro ângulo.</span>
+        </h1>
+      </div>
+    </div>
+
+    <div class="hero-top-mobile mobile-only">
       <div class="hero-logo">
         <img src="https://i.imgur.com/9R2bfPt.png" alt="POV Logo">
       </div>
@@ -986,7 +1135,7 @@
     <h2 class="section-title fade-in">Me mostra seu ponto de vista</h2>
     <p class="fade-in">Entre em contato e veja como podemos agregar mais valor ao seu projeto.</p>
     <div class="contato-btns fade-in">
-      <a href="https://wa.me/5521999999999" target="_blank" class="btn-whats">
+      <a href="https://wa.me/5521997444083" target="_blank" class="btn-whats">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         WhatsApp
       </a>
@@ -1002,7 +1151,21 @@
   </footer>
 
   <a href="https://wa.me/5521997444083" target="_blank" class="whats-float" title="WhatsApp">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    <div class="whats-cta-box desktop-only">
+      <div class="whats-cta-text">
+        Solicite seu<br>orçamento<span>.</span>
+      </div>
+      <div class="whats-cta-button">
+        WhatsApp
+        <svg viewBox="0 0 24 24" fill="white" aria-hidden="true">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+      </div>
+    </div>
+
+    <svg class="mobile-only" width="28" height="28" viewBox="0 0 24 24" fill="white" aria-hidden="true">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
   </a>
 
   <div class="modal" id="modal" onclick="closeModal(event)">
