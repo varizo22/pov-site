@@ -685,19 +685,25 @@
     }
 
     .whats-cta-button {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--red);
-      color: #fff;
-      text-decoration: none;
-      padding: 10px 14px;
-      font-family: "fractul-variable", sans-serif;
-      font-variation-settings: "wght" 2400;
-      font-size: 18px;
-      line-height: 1;
-      border-radius: 0;
-    }
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--red);
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 14px;
+  font-family: "fractul-variable", sans-serif;
+  font-variation-settings: "wght" 2400;
+  font-size: 18px;
+  line-height: 1;
+  border-radius: 0;
+  box-shadow:
+    0 0 18px rgba(192,57,43,0.45),
+    0 0 38px rgba(192,57,43,0.28),
+    0 12px 28px rgba(192,57,43,0.22);
+  animation: whatsappPulse 2s ease-in-out infinite;
+  transform-origin: center;
+}
 
     .whats-cta-button svg {
       width: 22px;
@@ -706,6 +712,22 @@
     }
 
     /* ANIMS */
+    @keyframes whatsappPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow:
+      0 0 18px rgba(192,57,43,0.45),
+      0 0 38px rgba(192,57,43,0.28),
+      0 12px 28px rgba(192,57,43,0.22);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow:
+      0 0 26px rgba(192,57,43,0.62),
+      0 0 54px rgba(192,57,43,0.38),
+      0 16px 34px rgba(192,57,43,0.28);
+  }
+      
     @keyframes fadeDown {
       from { opacity: 0; transform: translateY(-24px); }
       to { opacity: 1; transform: translateY(0); }
