@@ -33,6 +33,7 @@
     .mobile-only { display: none; }
 
     /* NAV */
+/* NAV */
 nav {
   position: fixed;
   top: 0;
@@ -51,7 +52,7 @@ nav {
   align-items: center;
   text-decoration: none;
   position: relative;
-  z-index: 102;
+  z-index: 103;
 }
 
 .nav-logo img {
@@ -60,13 +61,13 @@ nav {
   mix-blend-mode: screen;
 }
 
-nav ul {
+#nav-menu {
   list-style: none;
   display: flex;
   gap: 32px;
 }
 
-nav ul a {
+#nav-menu a {
   color: var(--white);
   text-decoration: none;
   font-size: 13px;
@@ -77,31 +78,33 @@ nav ul a {
   transition: opacity .2s;
 }
 
-nav ul a:hover { opacity: 1; }
+#nav-menu a:hover {
+  opacity: 1;
+}
 
 .nav-toggle {
   display: none;
   position: relative;
-  z-index: 102;
+  z-index: 103;
   width: 46px;
   height: 46px;
   border: 1px solid rgba(255,255,255,0.16);
   background: rgba(0,0,0,0.18);
   border-radius: 999px;
   cursor: pointer;
-  align-items: center;
-  justify-content: center;
   padding: 0;
   backdrop-filter: blur(6px);
 }
 
 .nav-toggle span {
   position: absolute;
+  left: 50%;
   width: 18px;
   height: 2px;
   background: #fff;
   border-radius: 999px;
-  transition: transform .25s ease, opacity .25s ease, top .25s ease;
+  transform: translateX(-50%);
+  transition: .25s ease;
 }
 
 .nav-toggle span:nth-child(1) { top: 15px; }
@@ -110,7 +113,7 @@ nav ul a:hover { opacity: 1; }
 
 .nav-toggle.active span:nth-child(1) {
   top: 22px;
-  transform: rotate(45deg);
+  transform: translateX(-50%) rotate(45deg);
 }
 
 .nav-toggle.active span:nth-child(2) {
@@ -119,7 +122,56 @@ nav ul a:hover { opacity: 1; }
 
 .nav-toggle.active span:nth-child(3) {
   top: 22px;
-  transform: rotate(-45deg);
+  transform: translateX(-50%) rotate(-45deg);
+}
+
+/* MOBILE NAV */
+@media (max-width: 768px) {
+  nav {
+    padding: 14px 16px;
+  }
+
+  .nav-logo img {
+    height: 30px;
+  }
+
+  .nav-toggle {
+    display: block;
+  }
+
+  #nav-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: min(78vw, 320px);
+    height: 100vh;
+    margin: 0;
+    padding: 96px 28px 40px;
+    background: rgba(7, 18, 33, 0.96);
+    backdrop-filter: blur(12px);
+    border-left: 1px solid rgba(255,255,255,0.08);
+    box-shadow: -20px 0 50px rgba(0,0,0,0.35);
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 22px;
+
+    transform: translateX(100%);
+    transition: transform .28s ease;
+    z-index: 102;
+  }
+
+  #nav-menu.active {
+    transform: translateX(0);
+  }
+
+  #nav-menu a {
+    font-size: 14px;
+    letter-spacing: 1px;
+    opacity: 1;
+  }
 }
 
     /* HERO */
@@ -719,7 +771,7 @@ nav ul a:hover { opacity: 1; }
     <img src="https://i.imgur.com/9R2bfPt.png" alt="POV Logo">
   </a>
 
-  <button class="nav-toggle mobile-only" id="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+  <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
     <span></span>
     <span></span>
     <span></span>
@@ -1056,7 +1108,6 @@ nav ul a:hover { opacity: 1; }
           <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
         `;
       }
-
       soundBtn.addEventListener('click', () => {
         if (isMuted) {
           ytCommand('unMute');
@@ -1067,6 +1118,25 @@ nav ul a:hover { opacity: 1; }
           ytCommand('mute');
           isMuted = true;
           setButtonMutedState();
+
+          const navToggle = document.getElementById('nav-toggle');
+const navMenu = document.getElementById('nav-menu');
+
+if (navToggle && navMenu) {
+  navToggle.addEventListener('click', () => {
+    const isOpen = navMenu.classList.toggle('active');
+    navToggle.classList.toggle('active', isOpen);
+    navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  navMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navMenu.classList.remove('active');
+      navToggle.classList.remove('active');
+      navToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+}
         }
       });
 
